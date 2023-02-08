@@ -18,14 +18,21 @@ app.get("/",(req,res)=>{
 
 //endpoints
 
-
+const data = {
+    name:"",
+    img:""
+}
 
 async function getGenre () {
     try {
         const response = await axios.get(url)
         const $ = cheerio.load(response.data)
-        const genre = $("h1").text()
-        console.log(genre)
+        const item = $("section")
+        
+
+        data.name = $(item).find("h3").text()
+        data.img = $(item).find(".product_price .price_color").text()
+        console.log(data)
         
     } catch (err) {
         console.log(err)
