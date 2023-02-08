@@ -4,10 +4,11 @@ const port = 8888;
 import cheerio from "cheerio"
 
 
+
 const app = express();
 
 
-
+const url = "https://books.toscrape.com/catalogue/category/books/philosophy_7/index.html"
 
 app.get("/",(req,res)=>{
     res.json("Api activated")
@@ -18,29 +19,22 @@ app.get("/",(req,res)=>{
 //endpoints
 
 
-const post = []
 
-app.get("/sports",(req,res)=>{
-    axios.get("https://www.theguardian.com/uk/sport")
-    .then((response)=>{
-        const html = response.data
-        const $ = cheerio.load(html)
-
-        $('a:contains("sport")',html).each(()=>{
-            const title = $(this).text();
-            const url = $(this).attr("href")
-
-            post.push({
-                title,
-                url
-            })
-        }) ; res.json(post)
+async function getGenre () {
+    try {
+        const response = await axios.get(url)
+        const $ = cheerio.load(response.data)
+        const genre = $("h1").text()
+        console.log(genre)
         
-    })
-    .catch((err)=>{
+    } catch (err) {
         console.log(err)
-    })
-})
+        
+    }
+
+}
+
+getGenre();
 
 
 
