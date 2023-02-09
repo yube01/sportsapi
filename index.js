@@ -2,6 +2,7 @@ import express, { response } from "express";
 import axios from "axios";
 const port = 8888;
 import cheerio from "cheerio"
+import { HMobiledata } from "@mui/icons-material";
 
 
 
@@ -18,31 +19,50 @@ app.get("/",(req,res)=>{
 
 //endpoints
 
-const data = {
-    name:"",
-    img:""
-}
+// const data = {
+//     name:"",
+//     img:""
+// }
 
-async function getGenre () {
-    try {
-        const response = await axios.get(url)
-        const $ = cheerio.load(response.data)
-        const item = $("section")
+// async function getGenre () {
+//     try {
+//         const response = await axios.get(url)
+//         const $ = cheerio.load(response.data)
+//         const item = $("section")
         
 
-        data.name = $(item).find("h3").text()
-        data.img = $(item).find(".product_price .price_color").text()
-        console.log(data)
+//         data.name = $(item).find("h3").text()
+//         data.img = $(item).find(".product_price .price_color").text()
+//         console.log(data)
         
-    } catch (err) {
-        console.log(err)
+//     } catch (err) {
+//         console.log(err)
         
-    }
+//     }
 
-}
+// }
 
-getGenre();
+// getGenre();
 
+
+const article = []
+
+app.get("/api", (req,res)=>{
+    axios.get("https://edition.cnn.com/sport")
+    .then((response)=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+
+
+       $(".container").each(()=>{
+            const title = $(this).text()
+            article.push({title})
+        })
+    })
+    res.json(article)
+}).catch((err)=>{
+    console.log(err)
+})
 
 
 app.listen(port, ()=>{
