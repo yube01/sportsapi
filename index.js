@@ -2,14 +2,14 @@ import express, { response } from "express";
 import axios from "axios";
 const port = 8888;
 import cheerio from "cheerio"
-import { HMobiledata } from "@mui/icons-material";
+
 
 
 
 const app = express();
 
 
-const url = "https://books.toscrape.com/catalogue/category/books/philosophy_7/index.html"
+
 
 app.get("/",(req,res)=>{
     res.json("Api activated")
@@ -45,23 +45,51 @@ app.get("/",(req,res)=>{
 // getGenre();
 
 
-const article = []
+const newspapers = [
+    {
+        name:"",
+        url:"https://www.cnn.com"
+    },
+    {
+        name:"",
+        url:"https://www.cnn.com"
+    },
+    {
+        name:"",
+        url:"https://www.cnn.com"
+    },
+  
+]
 
-app.get("/api", (req,res)=>{
-    axios.get("https://edition.cnn.com/sport")
+newspapers.forEach(newspaper =>{
+    axios.get(newspaper.url)
+    
     .then((response)=>{
         const html = response.data
         const $ = cheerio.load(html)
-
-
-       $(".container").each(()=>{
-            const title = $(this).text()
-            article.push({title})
+        const item = $('a:contains("climate")',html)
+        item.each(()=>{
+            const title = $(item).text()
+            const link = $(item).attr("href")
+            article.push({title, link})
         })
-    })
-    res.json(article)
-}).catch((err)=>{
-    console.log(err)
+        res.json(article)
+    }).catch((err)=>{
+        console.log(err)
+
+})
+
+
+})
+
+const article = []
+//const url = "https://www.foxnews.com/"
+
+app.get("/api", (req,res)=>{
+
+
+
+
 })
 
 
